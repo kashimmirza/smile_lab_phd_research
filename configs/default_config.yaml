@@ -1,0 +1,41 @@
+# @format
+
+dataset:
+ mri_root: "/path/to/mri"
+ octa_root: "/path/to/octa"
+ sample_rate: 1
+
+training:
+ batch_size: 1
+ epochs: 120
+ learning_rate: 1e-4
+ weight_decay: 1e-5
+ warmup_steps: 500
+
+model:
+ in_channels: 1
+ out_channels: 3
+ base_filters: 16
+ dropout: 0.1
+
+loss:
+ ssim_weight: 1.0
+ smoothness_weight: 0.1
+ contrastive_weight: 0.5
+
+logging:
+ wandb_project: "smile_lab_motion"
+ log_interval: 10
+
+study:
+ image_dir: "data/study_images"
+ paper_dir: "data/study_papers"
+ keywords:
+  - "cardiac"
+  - "retinal"
+  - "motion"
+
+paths:
+ output_dir: "outputs"
+ checkpoint_dir: "checkpoints"
+ figures_dir: "figures"
