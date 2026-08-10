@@ -13,6 +13,7 @@ import torch
 from torch.utils.data import DataLoader
 
 from data.dataset_mri import MRIDataset
+from data.dataset_resolver import resolve_dataset_root
 from data.experimental_pipeline import build_experiment_manifest, run_ablation_study, save_experiment_results
 from data.transforms import get_mri_transforms
 from losses.ssim_3d import ssim3d
@@ -20,6 +21,7 @@ from losses.smoothness import gradient_smoothness_loss
 from models.motion_engine import average_motion_descriptor, build_radial_reference, compute_directional_cosine
 from models.spatial_transformer import SpatialTransformer
 from models.unet3d_registration import UNet3DRegistration
+from scripts.dataset_crawler import extract_dataset_mentions, fetch_by_title, fetch_dataset, write_manifest
 
 try:
     import wandb
@@ -40,6 +42,14 @@ except ImportError:
 def parse_args():
     parser = argparse.ArgumentParser(description='Run the agentic research orchestration pipeline')
     parser.add_argument('--config', type=str, required=True)
+    parser.add_argument(
+        '--paper-title',
+        type=str,
+        default=None,
+        help='If set, resolves and fetches datasets referenced by this paper before training '
+             '(via scripts/dataset_crawler.py) and overrides dataset.mri_root / dataset.octa_root '
+             'once resolved.',
+    )
     return parser.parse_args()
 
 
@@ -61,6 +71,48 @@ def init_wandb(config):
     project = config['logging'].get('wandb_project', 'smile_lab_motion')
     run = wandb.init(project=project, config=config, reinit=True)
     return run
+
+
+def resolve_datasets(config, paper_title):
+    """
+    If --paper-title was given: run the crawler against that paper, fetch
+    any resolvable datasets, and point config['dataset']['mri_root'] /
+    ['octa_root'] at whichever ones dataset_resolution asks for.
+    Falls back silently to the existing config values if resolution isn't
+    set up for a given root, so this is safe to call unconditionally.
+    """
+    res_cfg = config.get('dataset_resolution', {})
+    manifest_path = res_cfg.get('manifest_path', 'data/dataset_manifest.json')
+
+    if paper_title and res_cfg.get('auto_fetch', True):
+        print(f"Resolving datasets referenced in: {paper_title}")
+        ctx = fetch_by_title(paper_title)
+        matches = extract_dataset_mentions(ctx)
+        if not matches:
+            print('  No known datasets detected in this paper. '
+                  'Add the dataset name to DATASET_REGISTRY in scripts/dataset_crawler.py.')
+        else:
+            results = [fetch_dataset(m) for m in matches]
+            for r in results:
+                note = f" ({r['note']})" if 'note' in r else ''
+                print(f"  - {r['name']}: {r['status']}{note}")
+            write_manifest(ctx.title, results)
+
+    mri_name = res_cfg.get('mri_dataset_name')
+    if mri_name:
+        config['dataset']['mri_root'] = resolve_dataset_root(
+            mri_name, manifest_path=manifest_path, fallback=config['dataset']['mri_root']
+        )
+        print(f"  dataset.mri_root -> {config['dataset']['mri_root']}")
+
+    octa_name = res_cfg.get('octa_dataset_name')
+    if octa_name:
+        config['dataset']['octa_root'] = resolve_dataset_root(
+            octa_name, manifest_path=manifest_path, fallback=config['dataset']['octa_root']
+        )
+        print(f"  dataset.octa_root -> {config['dataset']['octa_root']}")
+
+    return config
 
 
 def build_model(config, device):
@@ -179,13 +231,15 @@ def evaluate_ablation(history, descriptor_stats, config, output_dir):
 
 def generate_latex_report(metrics, output_dir):
     report_path = os.path.join(output_dir, 'research_report.tex')
+    final_loss = metrics['final_loss']
+    mean_alpha = metrics['descriptor_mean_alpha']
     with open(report_path, 'w') as f:
         f.write('\\documentclass{article}\n')
         f.write('\\usepackage{booktabs}\n')
         f.write('\\begin{document}\n')
         f.write('\\section*{SMILE Lab Agentic Research Report}\n')
-        f.write(f'Final training loss: {metrics['final_loss']:.6f}\\\\\n')
-        f.write(f'Mean alpha descriptor: {metrics['descriptor_mean_alpha']:.6f}\\\\\n')
+        f.write(f'Final training loss: {final_loss:.6f}\\\\\n')
+        f.write(f'Mean alpha descriptor: {mean_alpha:.6f}\\\\\n')
         f.write('\\subsection*{Ablation Results}\n')
         f.write('\\begin{tabular}{lll}\\toprule\n')
         f.write('Experiment & Description & Metric\\\\\n')
@@ -219,6 +273,7 @@ def run_crewai_agent(config):
 def main():
     args = parse_args()
     config = load_config(args.config)
+    config = resolve_datasets(config, args.paper_title)
     create_dirs(config)
     run = init_wandb(config)
 

@@ -5,6 +5,12 @@ dataset:
  octa_root: "/path/to/octa"
  sample_rate: 1
 
+dataset_resolution:
+ manifest_path: "data/dataset_manifest.json"
+ auto_fetch: true
+ mri_dataset_name: null # e.g. "brats" -- if set, overrides dataset.mri_root when resolved
+ octa_dataset_name: null # e.g. "drive"  -- if set, overrides dataset.octa_root when resolved
+
 training:
  batch_size: 1
  epochs: 120
