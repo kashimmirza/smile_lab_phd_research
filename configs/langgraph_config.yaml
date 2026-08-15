@@ -1,0 +1,80 @@
+# SMILE Lab LangGraph Director — Config
+
+director:
+  research_focus: >
+    Multimodal MRI and OCTA fusion for cardiac and retinal biomarker discovery,
+    aligned with SMILE Lab's REVEAL++ framework. Focus on self-supervised motion
+    descriptor extraction, pathology-weighted integration, and cross-organ modeling.
+
+  # LLM provider: "google" | "openai" | "anthropic"
+  llm_provider: google
+  model_name: gemini-2.0-flash
+
+  # Node execution flags
+  run_experiments: false     # Set true to run actual training (needs data)
+  send_email: false          # Set true to send email via SMTP (needs .env)
+
+# Prof. Fang / SMILE Lab contact info
+collaboration:
+  professor_name: Prof. Ruogu Fang
+  professor_email: ruogu.fang@bme.ufl.edu
+  lab_name: SMILE Lab
+  affiliation: University of Florida, BME
+  lab_url: https://smile.ece.ufl.edu
+  research_keywords:
+    - multimodal medical imaging
+    - REVEAL++
+    - retinal biomarkers
+    - cardiac MRI
+    - trustworthy AI
+    - foundation models
+
+# Literature search configuration
+literature:
+  arxiv_queries:
+    - "multimodal medical imaging MRI OCTA deep learning"
+    - "cardiac motion estimation registration self-supervised"
+    - "retinal fundus biomarker transformer 2024"
+    - "deformable registration spatial transformer network"
+    - "contrastive learning medical image segmentation"
+  openalex_queries:
+    - "REVEAL multimodal retinal cardiac imaging"
+    - "self-supervised 3D MRI registration"
+  year_from: 2023
+  max_results_per_query: 6
+
+# Ablation study configuration
+ablation:
+  components:
+    - ssim_loss
+    - smoothness_loss
+    - contrastive_loss
+    - octa_fusion_head
+    - text_feature_encoder
+  datasets:
+    - BraTS2023          # Brain tumor MRI (open)
+    - DRIVE              # Retinal vessel segmentation (open)
+    - ACDC               # Cardiac MRI (open)
+  metrics:
+    - DSC                # Dice Similarity Coefficient
+    - HD95               # 95th percentile Hausdorff Distance
+    - NCC                # Normalized Cross-Correlation
+    - SSIM               # Structural Similarity Index
+    - alpha_mean         # Mean motion descriptor
+    - alpha_std          # Std of motion descriptor
+  max_experiments: 12
+
+# Email configuration (actual credentials in .env)
+email:
+  sender_name: Kashim Mirza
+  # Loaded from env: EMAIL_SENDER_ADDRESS, EMAIL_APP_PASSWORD
+  smtp_host: smtp.gmail.com
+  smtp_port: 465
+  subject_template: "Collaboration Inquiry — Multimodal MRI+OCTA Research for SMILE Lab"
+
+# Output paths
+paths:
+  output_dir: outputs
+  session_json: outputs/director_session.json
+  latex_dir: outputs/latex
+  email_dir: outputs/emails
