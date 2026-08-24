@@ -89,7 +89,25 @@ The current scaffold is intentionally simple, but it is designed to support a me
 - crop the image with ratios such as $1.0, 0.95, 0.90, 0.85$ and resize back to the original shape
 - add Gaussian noise with standard deviations such as $0.0, 0.01, 0.03, 0.05$
 - vary brightness slightly to mimic scanner or acquisition differences
+# SMILE Lab PhD Research Portfolio
 
+## 📄 Key Publications & Technical Summaries
+
+* 📕 **[ConvNeXt-CBAM Technical Brief (PDF)](./notebooks/ConvNeXt-CBAM%20FOR%20BREAST%20ULTRASOUND.pdf)**  
+  *Evaluating Lightweight Dual-Attention Architectures for Breast Ultrasound Classification.*
+* 📘 **[PPV & Bayes Derivation Handout (PDF)](./notebooks/truefalsepositiveandtrupositive.pdf)**  
+  *Step-by-step mathematical derivation of Positive Predictive Value using Beamer slides.*
+
+---
+
+## 🔬 Coursera / Medical AI Lab Scripts
+
+| Notebook Script | Topic |
+| :--- | :--- |
+| [`C1_W1_Lab_1`](./notebooks/C1_W1_Lab_1_data_exploration_and_image_preprocessing%20(1).py) | Image Preprocessing & Data Exploration |
+| [`C1_W1_Lab_2`](./notebooks/C1_W1_Lab_2_counting_labels_and_weighted_loss_function.py) | Class Imbalance & Weighted Loss Functions |
+| [`C1_W1_Lab_3`](./notebooks/C1_W1_Lab_3_densenet.py) | DenseNet Architecture Implementation |
+| [`C1_W1_Lab_4`](./notebooks/C1_W1_Lab_4_patient_overlap_and_data_leakage.py) | Patient Overlap & Preventing Data Leakage |
 These experiments help measure whether the model is robust to realistic acquisition shifts, which is especially important for medical imaging.
 
 ## Alignment with SMILE Lab
