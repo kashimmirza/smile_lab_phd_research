@@ -1,6 +1,6 @@
 <!-- @format -->
 
-# SMILE Lab PhD Research Prep
+# Medical Image  Lab PhD Research Prep
 <img width="1666" height="1192" alt="image" src="https://github.com/user-attachments/assets/527fa07d-7d26-420d-9400-54e6e3d26ee7" />
 
 
