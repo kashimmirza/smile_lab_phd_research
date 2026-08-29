@@ -58,6 +58,7 @@ Build and maintain a clear, reproducible research repo for:
    - multi-site 3D medical imaging pipelines using SimpleITK, MONAI, and PyTorch
 2. **Agentic model exploration and ablation**
    - 3D U-Net registration, STN warping, pathology-weighted descriptors, and loss-variant comparisons
+   - **git repo for different image dataset [https://github.com/zhaoziheng/SAT-DS]
 3. **Agentic mathematical validation and physics consistency**
    - directional cosine similarity, divergence checks, and zero-crossing keyframe analysis
 4. **Agentic statistical benchmarking and visualization**
