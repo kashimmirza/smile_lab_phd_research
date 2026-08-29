@@ -1,6 +1,8 @@
 <!-- @format -->
 
 # SMILE Lab PhD Research Prep
+<img width="1666" height="1192" alt="image" src="https://github.com/user-attachments/assets/527fa07d-7d26-420d-9400-54e6e3d26ee7" />
+
 
 This repository is a research-ready scaffold for SMILE Lab PhD preparation, agentic medical imaging experimentation, and AI-assisted scientific workflow development. It is organized to support both interview preparation and technical research communication for Dr. Ruogu Fang and the SMILE Lab.
 
